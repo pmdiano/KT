@@ -38,22 +38,24 @@ class Home extends React.Component {
 
     return (
       <div className='container'>
-        <h3 className='text-center'>Recent Expenditures</h3>
         <div className='row'>
-          <table className='table table-hover'>
-            <thread className='thead-inverse'>
-              <tr>
-                <th key='col1'>#</th>
-                <th key='col2'>Date</th>
-                <th key='col3'>Description</th>
-                <th key='col4'>Category</th>
-                <th key='col5'>Amount</th>
-              </tr>
-            </thread>
-            <tbody>
-              {expenditureRows}
-            </tbody>
-          </table>
+          <div className='col-lg-12'>
+            <h3 className='text-center'>Recent Expenditures</h3>
+            <table className='table table-hover'>
+              <thread className='thead-inverse'>
+                <tr>
+                  <th key='col1'>#</th>
+                  <th key='col2'>Date</th>
+                  <th key='col3'>Description</th>
+                  <th key='col4'>Category</th>
+                  <th key='col5'>Amount</th>
+                </tr>
+              </thread>
+              <tbody>
+                {expenditureRows}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     )
