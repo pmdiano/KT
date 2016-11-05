@@ -9,10 +9,11 @@ var React = require('react');
 var Router = require('react-router');
 var mongoose = require('mongoose');
 
-var routes = require('./app/routes');
-var Expenditure = require('./models/expenditure');
 var config = require('./config');
+var routes = require('./app/routes');
 var stats = require('./app/stats');
+var exp = require('./models/expenditure');
+var Expenditure = exp.model;
 
 var app = express();
 
@@ -35,11 +36,13 @@ app.post('/api/expenditures', function(req, res, next) {
     var desc = req.body.desc;
     var category = req.body.category;
     var amount = req.body.amount;
+    var time = new Date();
 
     var expenditure = new Expenditure({
       desc: desc,
       category: category,
-      amount: amount
+      amount: amount,
+      date: time
     });
 
     expenditure.save(function(err) {
@@ -53,10 +56,10 @@ app.post('/api/expenditures', function(req, res, next) {
 
 /**
  * GET /api/expenditures
- * Returns all the expenditures
+ * Returns recent 50 expenditures
  */
 app.get('/api/expenditures', function(req, res, next) {
-  Expenditure.find()
+  Expenditure.find().sort( { date: -1 } ).limit(50)
     .exec(function(err, expenditures) {
       if (err) return next(err);
       res.send(expenditures);

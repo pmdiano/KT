@@ -8,4 +8,13 @@ var expenditureSchema = new mongoose.Schema({
   date            : { type: Date, index: true, default: Date.now }
 });
 
-module.exports = mongoose.model('Expenditure', expenditureSchema);
+module.exports.model = mongoose.model('Expenditure', expenditureSchema);
+
+module.exports.categories = [
+  'Clothes',
+  'Food',
+  'Transportation',
+  'Housing',
+  'Utility',
+  'Other'
+];

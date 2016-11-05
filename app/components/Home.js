@@ -24,7 +24,7 @@ class Home extends React.Component {
   }
 
   render() {
-    var expenditureRows = this.state.expenditures.reverse().map((expenditure, index) => {
+    var expenditureRows = this.state.expenditures.map((expenditure, index) => {
       return (
         <tr key={expenditure._id}>
           <th scope='row' key={expenditure._id+'col1'}>{index+1}</th>
