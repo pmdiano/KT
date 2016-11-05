@@ -93,12 +93,10 @@ class Navbar extends React.Component {
             <li className='dropdown'>
               <a href='#' className='dropdown-toggle' data-toggle='dropdown'>Stats<span className='caret'></span></a>
               <ul className='dropdown-menu'>
-                <li><Link to='/stats/today'>Today</Link></li>
-                <li><Link to='/stats/last3days'>Last 3 days</Link></li>
-                <li><Link to='/stats/thisweek'>This week</Link></li>
-                <li><Link to='/stats/thismonth'>This month</Link></li>
-                <li><Link to='/stats/thisyear'>This year</Link></li>
-                <li><Link to='/stats/last5years'>Last 5 years</Link></li>
+                <li><Link to='/stats/daily'>Daily</Link></li>
+                <li><Link to='/stats/weekly'>Weekly</Link></li>
+                <li><Link to='/stats/monthly'>Monthly</Link></li>
+                <li><Link to='/stats/yearly'>Yearly</Link></li>
               </ul>
             </li>
           </ul>

@@ -12,6 +12,7 @@ var mongoose = require('mongoose');
 var routes = require('./app/routes');
 var Expenditure = require('./models/expenditure');
 var config = require('./config');
+var stats = require('./app/stats');
 
 var app = express();
 
@@ -60,6 +61,27 @@ app.get('/api/expenditures', function(req, res, next) {
       if (err) return next(err);
       res.send(expenditures);
     });
+});
+
+/**
+ * GET /api/stats
+ * Returns the statistics of expenditure depending on the query
+ */
+app.get('/api/stats', function(req, res, next) {
+  try {
+    var type = req.query.type,
+        since = stats.getTimeToQuery(type);
+
+    Expenditure.find( { date: {$gt: since} })
+      .exec(function(err, expenditures) {
+        if (err) return next(err);
+        res.send(expenditures);
+      });
+
+    // TODO: consolidate the data
+  } catch (e) {
+    res.status(500).send({ message: e });
+  }
 });
 
 /**
