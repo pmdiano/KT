@@ -78,10 +78,8 @@ app.get('/api/stats', function(req, res, next) {
     Expenditure.find( { date: {$gt: since} })
       .exec(function(err, expenditures) {
         if (err) return next(err);
-        res.send(expenditures);
+        res.send(stats.getStats(expenditures, type));
       });
-
-    // TODO: consolidate the data
   } catch (e) {
     res.status(500).send({ message: e });
   }
