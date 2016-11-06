@@ -125,6 +125,7 @@ exports.getStats = function(expenditures, type) {
   var stats = [],
       dates = [],
       last = new Date(),
+      len = 0,
       normalizeFn = null,
       incrementFn = null;      
 
@@ -134,6 +135,7 @@ exports.getStats = function(expenditures, type) {
       incrementFn = Date.prototype.incrementDay;
       last.normalizeDay();
       last.setDate(last.getDate() - DAYS);
+      len = DAYS;
       break;
 
     case 'weekly':
@@ -141,6 +143,7 @@ exports.getStats = function(expenditures, type) {
       incrementFn = Date.prototype.incrementWeek;
       last.normalizeWeek();
       last.setDate(last.getDate() - WEEKS * 7);
+      len = WEEKS;
       break;
 
     case 'monthly':
@@ -148,6 +151,7 @@ exports.getStats = function(expenditures, type) {
       incrementFn = Date.prototype.incrementMonth;
       last.normalizeMonth();
       last.setMonth(last.getMonth() - MONTHS);
+      len = MONTHS;
       break;
 
     case 'yearly':
@@ -155,6 +159,7 @@ exports.getStats = function(expenditures, type) {
       incrementFn = Date.prototype.incrementYear;
       last.normalizeYear();
       last.setFullYear(last.getFullYear() - YEARS);
+      len = YEARS;
       break;
   }
 
@@ -167,6 +172,16 @@ exports.getStats = function(expenditures, type) {
     }
     stats[stats.length - 1].addExpenditure(e);
   });
+
+  // If we don't have recent data (e.g., there is no item for today),
+  // we need to append empty stats
+  while (dates.length < len) {
+    incrementFn.call(last);
+    dates.push(new Date(last.getFullYear(), last.getMonth(), last.getDate()));
+    stats.push(new Stats());
+  }
+
+  console.log("type = " + type + ", dates.len = " + dates.length + ", stats.len = " + stats.length);
 
   return {
     dates: dates,
