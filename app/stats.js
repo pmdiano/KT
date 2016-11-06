@@ -5,6 +5,22 @@ var DAYS = 30;
 var WEEKS = 12;
 var MONTHS = 12;
 var YEARS = 5;
+var _MS_PER_DAY = 1000 * 60 * 60 * 24;
+
+// a and b are javascript Date objects
+function dateDiffInDays(a, b) {
+  // Discard the time and time-zone information.
+  var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+  var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+  return Math.floor((utc2 - utc1) / _MS_PER_DAY);
+}
+
+function isSameDay(a, b) {
+  return a.getFullYear() === b.getFullYear()
+      && a.getMonth() === b.getMonth()
+      && a.getDate() === b.getDate();
+}
 
 Date.prototype.normalizeDay = function() {
   this.setHours(0);
@@ -47,12 +63,6 @@ Date.prototype.incrementYear = function() {
   this.setFullYear(this.getFullYear() + 1);
 }
 
-function isSameDay(a, b) {
-  return a.getFullYear() === b.getFullYear()
-      && a.getMonth() === b.getMonth()
-      && a.getDate() === b.getDate();
-}
-
 function Stats() {
   this.clothes = 0;
   this.food = 0;
@@ -64,6 +74,7 @@ function Stats() {
 
 Stats.prototype = {
   constructor: Stats,
+
   addExpenditure: function(record) {
     if (categories.indexOf(record.category) === -1 || typeof record.amount !== 'number') {
       console.info("Invalid expenditure record:");
@@ -79,6 +90,15 @@ Stats.prototype = {
       case 'Utility': this.utility += record.amount; break;
       case 'Other': this.other += record.amount; break;
     }
+  },
+
+  round: function() {
+    for (var prop in this) {
+      if (Object.prototype.hasOwnProperty.call(this, prop)) {
+        this[prop] = Math.round(this[prop] * 100) / 100;
+      }
+    }
+    return this;
   }
 }
 
@@ -181,10 +201,23 @@ exports.getStats = function(expenditures, type) {
     stats.push(new Stats());
   }
 
-  console.log("type = " + type + ", dates.len = " + dates.length + ", stats.len = " + stats.length);
+  var numOfDays = 1 + dateDiffInDays(exports.getTimeToQuery(type), new Date());
+  var totalStats = stats.reduce((a, b) => {
+    for (var prop in a) {
+      if (Object.prototype.hasOwnProperty.call(a, prop)) {
+        a[prop] += b[prop];
+      }
+    }
+    return a;
+  }, new Stats()).round();
+
+  console.log("type = " + type + ", dates.len = " + dates.length +
+              ", stats.len = " + stats.length + ", num of days = " + numOfDays);
 
   return {
     dates: dates,
-    stats: stats
+    stats: stats.map(s => s.round()),
+    numOfDays: numOfDays,
+    totalStats: totalStats
   }
 }
