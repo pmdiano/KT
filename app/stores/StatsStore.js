@@ -13,7 +13,8 @@ class StatsStore {
     this.bindActions(StatsActions);
     this.dates = [];
     this.stats = [];
-    this.numOfDays = 0;
+    this.numOfDays = null;
+    this.avgSpending = null;
     this.totalStats = {};
   }
 

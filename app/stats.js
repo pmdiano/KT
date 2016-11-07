@@ -202,22 +202,36 @@ exports.getStats = function(expenditures, type) {
   }
 
   var numOfDays = 1 + dateDiffInDays(exports.getTimeToQuery(type), new Date());
-  var totalStats = stats.reduce((a, b) => {
+
+  var total = stats.reduce((a, b) => {
     for (var prop in a) {
       if (Object.prototype.hasOwnProperty.call(a, prop)) {
         a[prop] += b[prop];
       }
     }
     return a;
-  }, new Stats()).round();
+  }, new Stats());
 
-  console.log("type = " + type + ", dates.len = " + dates.length +
-              ", stats.len = " + stats.length + ", num of days = " + numOfDays);
+  var totalStats = categories.map((category) => { return {
+    value: Math.round(total[category.toLowerCase()] * 100 / numOfDays) / 100,
+    name: category
+  }});
+
+  var totalSpending = categories.reduce((t, category) => {
+    return t + total[category.toLowerCase()];
+  }, 0);
+
+  console.log("type = " + type +
+              ", dates.len = " + dates.length +
+              ", stats.len = " + stats.length +
+              ", num of days = " + numOfDays +
+              ", total spending = " + totalSpending);
 
   return {
     dates: dates,
     stats: stats.map(s => s.round()),
     numOfDays: numOfDays,
-    totalStats: totalStats
+    totalStats: totalStats,
+    avgSpending: Math.round(totalSpending * 100 / numOfDays) / 100
   }
 }
