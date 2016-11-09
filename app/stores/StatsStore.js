@@ -12,10 +12,9 @@ class StatsStore {
   constructor() {
     this.bindActions(StatsActions);
     this.dates = [];
-    this.stats = [];
-    this.numOfDays = null;
-    this.avgSpending = null;
+    this.statsSeries = [];
     this.totalStats = {};
+    this.avgSpending = null;
   }
 
   onGetStatsSuccess(data) {

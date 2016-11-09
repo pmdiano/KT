@@ -38,16 +38,14 @@ class Stats extends React.Component {
   onChange(state) {
     this.setState(state);
     this.updatePieChart();
+    this.updateStackChart();
   }
 
   updatePieChart() {
-    var startDate = new Date(Date.parse(this.state.dates[0]));
-    var echartsPieInstance = this.refs.echarts_pie.getEchartsInstance();
-
-    echartsPieInstance.setOption({
+    this.refs.echarts_pie.getEchartsInstance().setOption({
       title: {
-        text: 'Daily average spending: ' + this.state.avgSpending,
-        subtext: startDate.toDateString() + ' - today'
+        text: 'Daily average: ' + this.state.avgSpending,
+        subtext: this.state.dates[0] + ' - today'
       },
       legend: {
         data: categories
@@ -59,10 +57,29 @@ class Stats extends React.Component {
     });
   }
 
+  updateStackChart() {
+    this.refs.echarts_stack.getEchartsInstance().setOption({
+      title: {
+        text: 'Trend'
+      },
+      legend: {
+        data: categories
+      },
+      xAxis: {
+        data: this.state.dates
+      },
+      series: this.state.statsSeries.map(function(item) {
+        item.stack = 'foo';
+        item.type = 'bar';
+        return item;
+      })
+    });
+  }
+
   getPieOption() {
     var option = {
       title : {
-        text: 'Daily average spending: ',
+        text: 'Daily average: ',
         subtext: '',
         x:'center'
       },
@@ -73,6 +90,8 @@ class Stats extends React.Component {
       legend: {
         orient: 'vertical',
         left: 'left',
+        bottom: 'middle',
+        selectedMode: false,
         data: []
       },
       series : [{
@@ -94,10 +113,60 @@ class Stats extends React.Component {
     return option;
   }
 
+  getStackOption() {
+    var option = {
+      title : {
+        text: '',
+        x:'center'
+      },
+      tooltip : {
+        trigger: 'axis',
+        axisPointer : {         // 坐标轴指示器，坐标轴触发有效
+          type : 'shadow'       // 默认为直线，可选为：'line' | 'shadow'
+        }
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left',
+        show: false,
+        data:[]
+      },
+      grid: {
+        left: '3%',
+        right: '4%',
+        bottom: '3%',
+        containLabel: true
+      },
+      xAxis : [
+        {
+          type : 'category',
+          data : []
+        }
+      ],
+      yAxis : [
+        {
+          type : 'value'
+        }
+      ],
+      series : []
+    };
+
+    return option;
+  }
+
   render() {
     return (
       <div className='container'>
-        <ReactEcharts ref='echarts_pie' option={this.getPieOption()}/>
+        <ReactEcharts
+          ref='echarts_pie'
+          option={this.getPieOption()}
+          style={{height: '250px', width: '100%'}}>
+        </ReactEcharts>
+        <ReactEcharts
+          ref='echarts_stack'
+          option={this.getStackOption()}
+          style={{height: '320px', width: '100%'}}>
+        </ReactEcharts>
       </div>
     );
   }

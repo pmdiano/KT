@@ -24,7 +24,7 @@ class Footer extends React.Component {
           <div className='row'>
             <div className='col-lg-12'>
               <h4 className='lead'><strong>Information</strong> and <strong>Copyright</strong></h4>
-              <p>A simple application to keep track of spending. Powered by <strong>Node.js</strong>, <strong>MongoDB</strong> and <strong>React</strong> with Flux architecture and server-side rendering. Inspired by Sahat Yalkobov's <a href='http://www.kancloud.cn/kancloud/create-voting-app/63976'>tutorial</a>.</p>
+              <p>A simple application to keep track of spending. Powered by <strong>Node.js</strong>, <strong>MongoDB</strong>, <strong>React</strong> and <strong>ECharts</strong>. Inspired by Sahat Yalkobov's <a href='http://www.kancloud.cn/kancloud/create-voting-app/63976'>tutorial</a>.</p>
             </div>
           </div>
         </div>

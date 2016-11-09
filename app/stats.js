@@ -1,5 +1,8 @@
+var dateFormat = require('dateformat');
 var exp = require('../models/expenditure');
 var categories = exp.categories;
+
+'use strict';
 
 var DAYS = 30;
 var WEEKS = 12;
@@ -63,42 +66,28 @@ Date.prototype.incrementYear = function() {
   this.setFullYear(this.getFullYear() + 1);
 }
 
+Number.prototype.round2 = function() {
+  return Math.round(this * 100) / 100;
+}
+
 function Stats() {
-  this.clothes = 0;
-  this.food = 0;
-  this.transportation = 0;
-  this.housing = 0;
-  this.utility = 0;
-  this.other = 0;
+  this.Clothes = 0;
+  this.Food = 0;
+  this.Transportation = 0;
+  this.Housing = 0;
+  this.Utility = 0;
+  this.Other = 0;
 }
 
 Stats.prototype = {
   constructor: Stats,
-
   addExpenditure: function(record) {
     if (categories.indexOf(record.category) === -1 || typeof record.amount !== 'number') {
       console.info("Invalid expenditure record:");
       console.dir(record);
       return;
     }
-
-    switch (record.category) {
-      case 'Clothes': this.clothes += record.amount; break;
-      case 'Food': this.food += record.amount; break;
-      case 'Transportation': this.transportation += record.amount; break;
-      case 'Housing': this.housing += record.amount; break;
-      case 'Utility': this.utility += record.amount; break;
-      case 'Other': this.other += record.amount; break;
-    }
-  },
-
-  round: function() {
-    for (var prop in this) {
-      if (Object.prototype.hasOwnProperty.call(this, prop)) {
-        this[prop] = Math.round(this[prop] * 100) / 100;
-      }
-    }
-    return this;
+    this[record.category] += record.amount;
   }
 }
 
@@ -146,37 +135,48 @@ exports.getStats = function(expenditures, type) {
       dates = [],
       last = new Date(),
       len = 0,
-      normalizeFn = null,
-      incrementFn = null;      
+      normalize = null,
+      increment = null,
+      format = null;
+
+  var uncurry = function(param) {
+    return function(time) {
+      return dateFormat(time, param);
+    };
+  };
 
   switch (type) {
     case 'daily':
-      normalizeFn = Date.prototype.normalizeDay;
-      incrementFn = Date.prototype.incrementDay;
+      normalize = Date.prototype.normalizeDay;
+      increment = Date.prototype.incrementDay;
+      format = uncurry("m-d");
       last.normalizeDay();
       last.setDate(last.getDate() - DAYS);
       len = DAYS;
       break;
 
     case 'weekly':
-      normalizeFn = Date.prototype.normalizeWeek;
-      incrementFn = Date.prototype.incrementWeek;
+      normalize = Date.prototype.normalizeWeek;
+      increment = Date.prototype.incrementWeek;
+      format = uncurry("mmm d");
       last.normalizeWeek();
       last.setDate(last.getDate() - WEEKS * 7);
       len = WEEKS;
       break;
 
     case 'monthly':
-      normalizeFn = Date.prototype.normalizeMonth;
-      incrementFn = Date.prototype.incrementMonth;
+      normalize = Date.prototype.normalizeMonth;
+      increment = Date.prototype.incrementMonth;
+      format = uncurry("mmm yyyy");
       last.normalizeMonth();
       last.setMonth(last.getMonth() - MONTHS);
       len = MONTHS;
       break;
 
     case 'yearly':
-      normalizeFn = Date.prototype.normalizeYear;
-      incrementFn = Date.prototype.incrementYear;
+      normalize = Date.prototype.normalizeYear;
+      increment = Date.prototype.incrementYear;
+      format = uncurry("yyyy");
       last.normalizeYear();
       last.setFullYear(last.getFullYear() - YEARS);
       len = YEARS;
@@ -184,10 +184,10 @@ exports.getStats = function(expenditures, type) {
   }
 
   expenditures.forEach(function(e) {
-    var day = normalizeFn.call(e.date);
+    var day = normalize.call(e.date);
     while (!isSameDay(day, last)) {
-      incrementFn.call(last);
-      dates.push(new Date(last.getFullYear(), last.getMonth(), last.getDate()));
+      increment.call(last);
+      dates.push(format(last));
       stats.push(new Stats());
     }
     stats[stats.length - 1].addExpenditure(e);
@@ -196,42 +196,50 @@ exports.getStats = function(expenditures, type) {
   // If we don't have recent data (e.g., there is no item for today),
   // we need to append empty stats
   while (dates.length < len) {
-    incrementFn.call(last);
-    dates.push(new Date(last.getFullYear(), last.getMonth(), last.getDate()));
+    increment.call(last);
+    dates.push(format(last));
     stats.push(new Stats());
   }
 
-  var numOfDays = 1 + dateDiffInDays(exports.getTimeToQuery(type), new Date());
+  /**
+   * The stats series to plot the stack bar graph
+   */
+  var statsSeries = categories.map(function(category) {
+    return {
+      name: category,
+      data: stats.map(x => x[category].round2())
+    };
+  });
 
-  var total = stats.reduce((a, b) => {
-    for (var prop in a) {
-      if (Object.prototype.hasOwnProperty.call(a, prop)) {
-        a[prop] += b[prop];
-      }
+  /**
+   * Stats to show the average spending per day in different category
+   */
+  var numOfDays = 1 + dateDiffInDays(exports.getTimeToQuery(type), new Date()),
+      total = new Stats(),
+      totalSpending = 0,
+      totalStats = null;
+
+  stats.forEach(function(stat) {
+    categories.forEach(function(category) {
+      total[category] += stat[category];
+    });
+  });
+
+  totalStats = categories.map(function(category) {
+    return {
+      name: category,
+      value: total[category].round2()
     }
-    return a;
-  }, new Stats());
+  }),
 
-  var totalStats = categories.map((category) => { return {
-    value: Math.round(total[category.toLowerCase()] * 100 / numOfDays) / 100,
-    name: category
-  }});
-
-  var totalSpending = categories.reduce((t, category) => {
-    return t + total[category.toLowerCase()];
+  totalSpending = categories.reduce((t, category) => {
+    return t + total[category];
   }, 0);
-
-  console.log("type = " + type +
-              ", dates.len = " + dates.length +
-              ", stats.len = " + stats.length +
-              ", num of days = " + numOfDays +
-              ", total spending = " + totalSpending);
 
   return {
     dates: dates,
-    stats: stats.map(s => s.round()),
-    numOfDays: numOfDays,
+    statsSeries: statsSeries,
     totalStats: totalStats,
-    avgSpending: Math.round(totalSpending * 100 / numOfDays) / 100
+    avgSpending: (totalSpending / numOfDays).round2()
   }
 }
