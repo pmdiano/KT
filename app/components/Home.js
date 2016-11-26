@@ -27,7 +27,7 @@ class Home extends React.Component {
     var expenditureRows = this.state.expenditures.map((expenditure, index) => {
       return (
         <tr key={expenditure._id}>
-          <th scope='row' key={expenditure._id+'col1'}>{index+1}</th>
+          <td scope='row' key={expenditure._id+'col1'}>{index+1}</td>
           <td key={expenditure._id+'col2'}>{expenditure.date}</td>
           <td key={expenditure._id+'col3'}>{expenditure.desc}</td>
           <td key={expenditure._id+'col4'}>{expenditure.category}</td>
@@ -42,7 +42,7 @@ class Home extends React.Component {
           <div className='col-lg-12'>
             <h3 className='text-center'>Recent Expenditures</h3>
             <table className='table table-hover'>
-              <thread className='thead-inverse'>
+              <thead className='thead-inverse'>
                 <tr>
                   <th key='col1'>#</th>
                   <th key='col2'>Date</th>
@@ -50,7 +50,7 @@ class Home extends React.Component {
                   <th key='col4'>Category</th>
                   <th key='col5'>Amount</th>
                 </tr>
-              </thread>
+              </thead>
               <tbody>
                 {expenditureRows}
               </tbody>
@@ -58,7 +58,7 @@ class Home extends React.Component {
           </div>
         </div>
       </div>
-    )
+    );
   }
 }
 
