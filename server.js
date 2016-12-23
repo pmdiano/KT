@@ -6,6 +6,7 @@ var favicon = require('serve-favicon');
 
 var swig  = require('swig');
 var React = require('react');
+var ReactDOMServer = require('react-dom/server');
 var Router = require('react-router');
 var mongoose = require('mongoose');
 
@@ -90,7 +91,7 @@ app.get('/api/stats', function(req, res, next) {
  */
 app.use(function(req, res) {
   Router.run(routes, req.path, function(Handler) {
-    var html = React.renderToString(React.createElement(Handler));
+    var html = ReactDOMServer.renderToString(React.createElement(Handler));
     var page = swig.renderFile('views/index.html', { html: html });
     res.send(page);
   });

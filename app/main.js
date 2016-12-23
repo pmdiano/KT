@@ -1,4 +1,5 @@
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Router from 'react-router';
 import routes from './routes';
 
@@ -10,5 +11,5 @@ Router.run(routes, Router.HistoryLocation, function(Handler) {
    * inside a component's `render` method, or you have multiple copies of
    * React loaded (details: https://fb.me/react-refs-must-have-owner)
    */
-  React.render(<Handler />, document.getElementById('app'));
+  ReactDOM.render(<Handler />, document.getElementById('app'));
 });
