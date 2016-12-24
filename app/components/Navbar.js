@@ -56,14 +56,18 @@ class Navbar extends React.Component {
     return (
       <nav className='navbar navbar-default navbar-static-top'>
         <div className='navbar-header'>
-          <button type='button' className='navbar-toggle collapsed' data-toggle='collapse' data-target='#navbar'>
+          <button type='button'
+                  className='navbar-toggle collapsed'
+                  data-toggle='collapse'
+                  data-target='#navbar'>
             <span className='sr-only'>Toggle navigation</span>
             <span className='icon-bar'></span>
             <span className='icon-bar'></span>
             <span className='icon-bar'></span>
           </button>
           <Link to='/' className='navbar-brand'>
-            <span ref='triangles' className={'triangles animated ' + this.state.ajaxAnimationClass}>
+            <span ref='triangles'
+                  className={'triangles animated ' + this.state.ajaxAnimationClass}>
               <div className='tri invert'></div>
               <div className='tri invert'></div>
               <div className='tri'></div>
@@ -79,11 +83,19 @@ class Navbar extends React.Component {
           </Link>
         </div>
         <div id='navbar' className='navbar-collapse collapse'>
-          <form ref='searchForm' className='navbar-form navbar-left animated' onSubmit={this.handleSubmit.bind(this)}>
+          <form ref='searchForm'
+                className='navbar-form navbar-left animated'
+                onSubmit={this.handleSubmit.bind(this)}>
             <div className='input-group'>
-              <input type='text' className='form-control' placeholder='Enter description' value={this.state.searchQuery} onChange={NavbarActions.updateSearchQuery} />
+              <input type='text'
+                     className='form-control'
+                     placeholder='Enter description'
+                     value={this.state.searchQuery}
+                     onChange={NavbarActions.updateSearchQuery} />
               <span className='input-group-btn'>
-                <button className='btn btn-default' onClick={this.handleSubmit.bind(this)}><span className='glyphicon glyphicon-search'></span></button>
+                <button className='btn btn-default' onClick={this.handleSubmit.bind(this)}>
+                  <span className='glyphicon glyphicon-search'></span>
+                </button>
               </span>
             </div>
           </form>
@@ -91,7 +103,10 @@ class Navbar extends React.Component {
             <li><Link to='/'>Home</Link></li>
             <li><Link to='/add'>Add</Link></li>
             <li className='dropdown'>
-              <a href='#' className='dropdown-toggle' data-toggle='dropdown'>Stats<span className='caret'></span></a>
+              <a href='#' className='dropdown-toggle' data-toggle='dropdown'>
+                Stats
+                <span className='caret'></span>
+              </a>
               <ul className='dropdown-menu'>
                 <li><Link to='/stats/daily'>Daily</Link></li>
                 <li><Link to='/stats/weekly'>Weekly</Link></li>

@@ -53,13 +53,18 @@ class AddExpenditure extends React.Component {
                 <form onSubmit={this.handleSubmit.bind(this)}>
                   <div className={'form-group ' + this.state.descValidationState}>
                     <label className='control-label'>Description</label>
-                    <input type='text' className='form-control' ref='descTextField' value={this.state.desc}
-                           onChange={AddExpenditureActions.updateDesc} autoFocus/>
+                    <input type='text'
+                           className='form-control'
+                           ref='descTextField'
+                           value={this.state.desc}
+                           onChange={AddExpenditureActions.updateDesc}
+                           autoFocus/>
                     <span className='help-block'>{this.state.descHelpBlock}</span>
                   </div>
                   <div className={'form-group ' + this.state.categoryValidationState}>
                     <label className='control-label'>Category</label>
-                    <select className="form-control" value={this.state.category}
+                    <select className="form-control"
+                            value={this.state.category}
                             onChange={AddExpenditureActions.updateCategory}>
                       <option>Clothes</option>
                       <option>Food</option>
@@ -73,7 +78,10 @@ class AddExpenditure extends React.Component {
                   </div>
                   <div className={'form-group ' + this.state.amountValidationState}>
                     <label className='control-label'>Amount</label>
-                    <input type='number' step="0.01" className='form-control' value={this.state.amount}
+                    <input type='number'
+                           step="0.01"
+                           className='form-control'
+                           value={this.state.amount}
                            onChange={AddExpenditureActions.updateAmount}/>
                   </div>
                   <button type='submit' className='btn btn-primary'>Submit</button>
