@@ -7,6 +7,7 @@ class AddExpenditureStore {
     this.desc = '';
     this.category = '';
     this.amount = 0;
+    this.spread = false;
     this.descHelpBlock = '';
     this.categoryHelpBlock = '';
     this.descValidationState = '';
@@ -42,6 +43,10 @@ class AddExpenditureStore {
   onUpdateAmount(event) {
     this.amount = event.target.value;
     this.amountValidationState = '';
+  }
+
+  onUpdateSpread(event) {
+    this.spread = event.target.checked;
   }
 
   onInvalidDesc() {

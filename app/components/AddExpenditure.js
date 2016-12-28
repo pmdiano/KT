@@ -27,6 +27,7 @@ class AddExpenditure extends React.Component {
     var desc = this.state.desc.trim();
     var category = this.state.category;
     var amount = this.state.amount;
+    var spread = this.state.spread;
 
     if (!desc) {
       AddExpenditureActions.invalidDesc();
@@ -38,7 +39,7 @@ class AddExpenditure extends React.Component {
     }
 
     if (desc && category) {
-      AddExpenditureActions.addExpenditure(desc, category, amount);
+      AddExpenditureActions.addExpenditure(desc, category, amount, spread);
     }
   }
 
@@ -83,6 +84,13 @@ class AddExpenditure extends React.Component {
                            className='form-control'
                            value={this.state.amount}
                            onChange={AddExpenditureActions.updateAmount}/>
+                  </div>
+                  <div className='form-group'>
+                    <label className='control-lable'>Spread over the month</label>
+                    <input type='checkbox'
+                         className='form-control'
+                         value={this.state.spread}
+                         onChange={AddExpenditureActions.updateSpread}/>
                   </div>
                   <button type='submit' className='btn btn-primary'>Submit</button>
                 </form>

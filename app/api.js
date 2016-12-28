@@ -42,6 +42,7 @@ exports.postExpenditure = function(req, res, next) {
     var desc = req.body.desc;
     var category = req.body.category;
     var amount = req.body.amount;
+    var spread = req.body.spread;
     var time = new Date();
 
     var expenditure = new Expenditure({

@@ -8,6 +8,7 @@ class AddExpenditureActions {
       'updateDesc',
       'updateCategory',
       'updateAmount',
+      'updateSpread',
       'invalidDesc',
       'invalidCategory',
       'invalidAmount',
@@ -15,11 +16,11 @@ class AddExpenditureActions {
     );
   }
 
-  addExpenditure(desc, category, amount) {
+  addExpenditure(desc, category, amount, spread) {
     $.ajax({
       type: 'POST',
       url: '/api/expenditures',
-      data: { desc: desc, category: category, amount: amount }
+      data: { desc: desc, category: category, amount: amount, spread: spread }
     })
       .done((data) => {
         this.actions.addExpenditureSuccess(data.message);
