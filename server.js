@@ -12,14 +12,12 @@ var mongoose = require('mongoose');
 
 var config = require('./config');
 var routes = require('./app/routes');
-var stats = require('./app/stats');
-var exp = require('./models/expenditure');
-var Expenditure = exp.model;
+var api = require('./app/api');
 
 var app = express();
 
 /**
- * Express stuff
+ * Express
  */
 app.set('port', process.env.PORT || 3000);
 app.use(logger('dev'));
@@ -29,65 +27,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(favicon(path.join(__dirname, 'public', 'favicon.png')));
 
 /**
- * POST /api/expenditure
- * Adds new expenditure item to the database.
+ * APIs
  */
-app.post('/api/expenditures', function(req, res, next) {
-  try {
-    var desc = req.body.desc;
-    var category = req.body.category;
-    var amount = req.body.amount;
-    var time = new Date();
-
-    var expenditure = new Expenditure({
-      desc: desc,
-      category: category,
-      amount: amount,
-      date: time
-    });
-
-    expenditure.save(function(err) {
-      if (err) return next(err);
-      res.send({ message: 'Expenditure has been added successfully!' });
-    });
-  } catch (e) {
-    res.status(500).send({ message: e });
-  }
-});
+app.get('/api/expenditures', api.getExpenditures);
+app.get('/api/stats', api.getStats);
+app.post('/api/expenditures', api.postExpenditure);
 
 /**
- * GET /api/expenditures
- * Returns recent 50 expenditures
- */
-app.get('/api/expenditures', function(req, res, next) {
-  Expenditure.find().sort( { date: -1 } ).limit(50)
-    .exec(function(err, expenditures) {
-      if (err) return next(err);
-      res.send(expenditures);
-    });
-});
-
-/**
- * GET /api/stats
- * Returns the statistics of expenditure depending on the query
- */
-app.get('/api/stats', function(req, res, next) {
-  try {
-    var type = req.query.type,
-        since = stats.getTimeToQuery(type);
-
-    Expenditure.find( { date: {$gt: since} })
-      .exec(function(err, expenditures) {
-        if (err) return next(err);
-        res.send(stats.getStats(expenditures, type));
-      });
-  } catch (e) {
-    res.status(500).send({ message: e });
-  }
-});
-
-/**
- * React stuff
+ * React
  */
 app.use(function(req, res) {
   Router.run(routes, req.path, function(Handler) {
@@ -98,7 +45,7 @@ app.use(function(req, res) {
 });
 
 /**
- * MongoDB stuff
+ * MongoDB
  */
 mongoose.connect(config.database);
 mongoose.connection.on('error', function() {
@@ -106,7 +53,7 @@ mongoose.connection.on('error', function() {
 })
 
 /**
- * Socket.io stuff.
+ * Socket.io
  */
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
@@ -124,7 +71,7 @@ io.sockets.on('connection', function(socket) {
 });
 
 /**
- * Start!
+ * Start
  */
 server.listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
