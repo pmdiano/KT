@@ -37,6 +37,7 @@
     "gulp-util": "^3.0.6",
     "mongoose": "^4.0.7",
     "morgan": "^1.6.1",
+    "q": "^1.4.1",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-router": "^0.13.3",
