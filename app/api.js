@@ -8,8 +8,11 @@ var Expenditure = exp.model;
  * Returns recent 50 expenditures
  */
 exports.getExpenditures = function (req, res, next) {
-  Expenditure.find().sort( { date: -1 } ).limit(50)
-    .exec(function(err, expenditures) {
+  Expenditure.find().
+    where('category').nin(['Housing', 'Utility']).
+    sort( { date: -1 } ).
+    limit(50).
+    exec(function(err, expenditures) {
       if (err) return next(err);
       res.send(expenditures);
     });
