@@ -15,6 +15,7 @@ module.exports.categories = [
   'Food',
   'Transportation',
   'Housing',
+  'Necessity',
   'Utility',
   'Other'
 ];

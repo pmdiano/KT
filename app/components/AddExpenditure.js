@@ -71,6 +71,7 @@ class AddExpenditure extends React.Component {
                       <option>Food</option>
                       <option>Transportation</option>
                       <option>Housing</option>
+                      <option>Necessity</option>
                       <option>Utility</option>
                       <option>Other</option>
                       <option></option>

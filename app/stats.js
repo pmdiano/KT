@@ -75,6 +75,7 @@ function Stats() {
   this.Food = 0;
   this.Transportation = 0;
   this.Housing = 0;
+  this.Necessity = 0;
   this.Utility = 0;
   this.Other = 0;
 }

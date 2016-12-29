@@ -8,6 +8,7 @@ var categories = [
   'Food',
   'Transportation',
   'Housing',
+  'Necessity',
   'Utility',
   'Other'
 ];
